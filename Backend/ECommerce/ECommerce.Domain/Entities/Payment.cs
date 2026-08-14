@@ -1,18 +1,17 @@
 using ECommerce.Domain.Enums;
-
+using ECommerce.Domain.Common;
 namespace ECommerce.Domain.Entities
 {
-    public class Payment
+    public class Payment : BaseEntity
     {
-        public int Id { get; set; }
         public int OrderId { get; set; }
-        public decimal Amount { get; set; }
-        public PaymentStatus PaymentStatus { get; set; } = PaymentStatus.Pending;
-        public string PaymentMethod { get; set; } = string.Empty;
-        public string TransactionId { get; set; } = string.Empty;
-        public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
-
         public Order Order { get; set; } = null!;
+
+        public decimal Amount { get; set; }
+        public PaymentMilestoneType MilestoneType { get; set; } // Deposit or FinalSettlement
+        public PaymentStatus Status { get; set; } = PaymentStatus.Pending;
+        public string? StripePaymentIntentId { get; set; }
+        public string? StripeClientSecret { get; set; }
+        public DateTime? PaidAt { get; set; }
     }
 }

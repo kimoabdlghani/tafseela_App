@@ -1,9 +1,9 @@
+using ECommerce.Domain.Common;
 namespace ECommerce.Domain.Entities
 {
-    public class ProductImage
+    public class ProductImage : BaseEntity
     {
-        public int Id { get; set; }
-        public int ProductId { get; set; }
+        public Guid ProductId { get; set; }
         public string ImageUrl { get; set; } = string.Empty;
         public string PublicId { get; set; } = string.Empty;
         public bool IsPrimary { get; set; }

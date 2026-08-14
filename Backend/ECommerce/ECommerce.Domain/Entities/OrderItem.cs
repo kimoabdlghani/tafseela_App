@@ -1,10 +1,9 @@
+ using ECommerce.Domain.Common;
 namespace ECommerce.Domain.Entities
 {
-    public class OrderItem
+    public class OrderItem : BaseEntity
     {
-        public int Id { get; set; }
-        public int OrderId { get; set; }
-        public int ProductVariantId { get; set; }
+        public Guid OrderId { get; set; }
         public string ProductName { get; set; } = string.Empty;
         public string Color { get; set; } = string.Empty;
         public string Size { get; set; } = string.Empty;
@@ -13,6 +12,5 @@ namespace ECommerce.Domain.Entities
         public decimal TotalPrice { get; set; }
 
         public Order Order { get; set; } = null!;
-        public ProductVariant ProductVariant { get; set; } = null!;
     }
 }
