@@ -14,6 +14,7 @@ namespace ECommerce.Domain.Entities
         public bool IsDeleted { get; set; }
         public DateTime? DeletedAt { get; set; }
         public ICollection<Address> Addresses { get; set; } = [];
+        public ICollection<CartItem> CartItems { get; set; } = [];
         public ICollection<WishlistItem> WishlistItems { get; set; } = [];
         public ICollection<Order> Orders { get; set; } = [];
         public ICollection<Review> Reviews { get; set; } = [];

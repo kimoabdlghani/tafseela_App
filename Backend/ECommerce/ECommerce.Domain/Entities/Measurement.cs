@@ -1,17 +1,13 @@
-﻿using ECommerce.Domain.Common;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using ECommerce.Domain.Common;
 
 namespace ECommerce.Domain.Entities
 {
     public class Measurement : BaseEntity, ISoftDeletable
     {
-        public string Unit { get; set; }
+        public int ProductId { get; set; }
+        public string Unit { get; set; } = string.Empty;
         public decimal Length { get; set; }
-
         public decimal Width { get; set; }
-
         public decimal Height { get; set; }
 
         public Product Product { get; set; } = null!;

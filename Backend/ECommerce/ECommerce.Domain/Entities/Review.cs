@@ -4,8 +4,8 @@ namespace ECommerce.Domain.Entities
 {
     public class Review : BaseEntity, ISoftDeletable
     {
-        public Guid UserId { get; set; }
-        public Guid ProductId { get; set; }
+        public int UserId { get; set; }
+        public int ProductId { get; set; }
         public int Rating { get; set; }
         public string Comment { get; set; } = string.Empty;
         public bool IsDeleted { get; set; }

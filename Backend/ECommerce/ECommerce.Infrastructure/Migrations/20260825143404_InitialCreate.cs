@@ -19,6 +19,8 @@ namespace ECommerce.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    LogoUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LogoPublicId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -52,6 +54,26 @@ namespace ECommerce.Infrastructure.Migrations
                         principalTable: "Categories",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Materials",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    BasePricePerSquareMeter = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    IsAvailable = table.Column<bool>(type: "bit", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Materials", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -112,6 +134,7 @@ namespace ECommerce.Infrastructure.Migrations
                     BrandId = table.Column<int>(type: "int", nullable: true),
                     Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: false),
+                    EstimatedStartingPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -295,6 +318,76 @@ namespace ECommerce.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CustomOrderRequests",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    ReferenceProductId = table.Column<int>(type: "int", nullable: true),
+                    MaterialId = table.Column<int>(type: "int", nullable: false),
+                    HeightCm = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    WidthCm = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    DepthCm = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    FinishOrColor = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AdminNotes = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CustomOrderRequests", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CustomOrderRequests_Materials_MaterialId",
+                        column: x => x.MaterialId,
+                        principalTable: "Materials",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CustomOrderRequests_Products_ReferenceProductId",
+                        column: x => x.ReferenceProductId,
+                        principalTable: "Products",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_CustomOrderRequests_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Measurements",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    Unit = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Length = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Width = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Height = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Measurements", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Measurements_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ProductImages",
                 columns: table => new
                 {
@@ -304,7 +397,8 @@ namespace ECommerce.Infrastructure.Migrations
                     ImageUrl = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
                     PublicId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsPrimary = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -378,39 +472,58 @@ namespace ECommerce.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Orders",
+                name: "Quotations",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    AddressId = table.Column<int>(type: "int", nullable: false),
-                    OrderStatus = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    AddressId1 = table.Column<int>(type: "int", nullable: true),
+                    CustomOrderRequestId = table.Column<int>(type: "int", nullable: false),
+                    MaterialCost = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    LaborCost = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    AccessoriesCost = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    TotalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    RequiredDepositAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    EstimatedProductionDays = table.Column<int>(type: "int", nullable: false),
+                    ValidUntil = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    OrderId = table.Column<int>(type: "int", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Orders", x => x.Id);
+                    table.PrimaryKey("PK_Quotations", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Orders_Addresses_AddressId",
-                        column: x => x.AddressId,
-                        principalTable: "Addresses",
+                        name: "FK_Quotations_CustomOrderRequests_CustomOrderRequestId",
+                        column: x => x.CustomOrderRequestId,
+                        principalTable: "CustomOrderRequests",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RequestAttachments",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CustomOrderRequestId = table.Column<int>(type: "int", nullable: false),
+                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PublicId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RequestAttachments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Orders_Addresses_AddressId1",
-                        column: x => x.AddressId1,
-                        principalTable: "Addresses",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Orders_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
+                        name: "FK_RequestAttachments_CustomOrderRequests_CustomOrderRequestId",
+                        column: x => x.CustomOrderRequestId,
+                        principalTable: "CustomOrderRequests",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -422,7 +535,6 @@ namespace ECommerce.Infrastructure.Migrations
                     UserId = table.Column<int>(type: "int", nullable: false),
                     ProductVariantId = table.Column<int>(type: "int", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false, defaultValue: 1),
-                    ProductVariantId1 = table.Column<int>(type: "int", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -435,11 +547,6 @@ namespace ECommerce.Infrastructure.Migrations
                         principalTable: "ProductVariants",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_CartItems_ProductVariants_ProductVariantId1",
-                        column: x => x.ProductVariantId1,
-                        principalTable: "ProductVariants",
-                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_CartItems_Users_UserId",
                         column: x => x.UserId,
@@ -456,7 +563,8 @@ namespace ECommerce.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<int>(type: "int", nullable: false),
                     ProductVariantId = table.Column<int>(type: "int", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -476,6 +584,51 @@ namespace ECommerce.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Orders",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    OrderNumber = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    AddressId = table.Column<int>(type: "int", nullable: false),
+                    QuotationId = table.Column<int>(type: "int", nullable: true),
+                    OrderStatus = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    TotalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    PaidAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    AddressId1 = table.Column<int>(type: "int", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Orders", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Orders_Addresses_AddressId",
+                        column: x => x.AddressId,
+                        principalTable: "Addresses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Orders_Addresses_AddressId1",
+                        column: x => x.AddressId1,
+                        principalTable: "Addresses",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Orders_Quotations_QuotationId",
+                        column: x => x.QuotationId,
+                        principalTable: "Quotations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "FK_Orders_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "OrderItems",
                 columns: table => new
                 {
@@ -489,7 +642,8 @@ namespace ECommerce.Infrastructure.Migrations
                     UnitPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    ProductVariantId1 = table.Column<int>(type: "int", nullable: true)
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -506,11 +660,6 @@ namespace ECommerce.Infrastructure.Migrations
                         principalTable: "ProductVariants",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_OrderItems_ProductVariants_ProductVariantId1",
-                        column: x => x.ProductVariantId1,
-                        principalTable: "ProductVariants",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -521,9 +670,13 @@ namespace ECommerce.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     OrderId = table.Column<int>(type: "int", nullable: false),
                     Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    PaymentStatus = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     PaymentMethod = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    TransactionId = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    PaymentStatus = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    TransactionId = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    StripePaymentIntentId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StripeClientSecret = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MilestoneType = table.Column<int>(type: "int", nullable: false),
+                    PaidAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -549,11 +702,6 @@ namespace ECommerce.Infrastructure.Migrations
                 column: "ProductVariantId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CartItems_ProductVariantId1",
-                table: "CartItems",
-                column: "ProductVariantId1");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_CartItems_UserId_ProductVariantId",
                 table: "CartItems",
                 columns: new[] { "UserId", "ProductVariantId" },
@@ -563,6 +711,26 @@ namespace ECommerce.Infrastructure.Migrations
                 name: "IX_Categories_ParentCategoryId",
                 table: "Categories",
                 column: "ParentCategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomOrderRequests_MaterialId",
+                table: "CustomOrderRequests",
+                column: "MaterialId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomOrderRequests_ReferenceProductId",
+                table: "CustomOrderRequests",
+                column: "ReferenceProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomOrderRequests_UserId",
+                table: "CustomOrderRequests",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Measurements_ProductId",
+                table: "Measurements",
+                column: "ProductId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrderItems_OrderId",
@@ -575,11 +743,6 @@ namespace ECommerce.Infrastructure.Migrations
                 column: "ProductVariantId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrderItems_ProductVariantId1",
-                table: "OrderItems",
-                column: "ProductVariantId1");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Orders_AddressId",
                 table: "Orders",
                 column: "AddressId");
@@ -588,6 +751,13 @@ namespace ECommerce.Infrastructure.Migrations
                 name: "IX_Orders_AddressId1",
                 table: "Orders",
                 column: "AddressId1");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_QuotationId",
+                table: "Orders",
+                column: "QuotationId",
+                unique: true,
+                filter: "[QuotationId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_UserId",
@@ -621,6 +791,11 @@ namespace ECommerce.Infrastructure.Migrations
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Quotations_CustomOrderRequestId",
+                table: "Quotations",
+                column: "CustomOrderRequestId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_RefreshTokens_Token",
                 table: "RefreshTokens",
                 column: "Token",
@@ -630,6 +805,11 @@ namespace ECommerce.Infrastructure.Migrations
                 name: "IX_RefreshTokens_UserId",
                 table: "RefreshTokens",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RequestAttachments_CustomOrderRequestId",
+                table: "RequestAttachments",
+                column: "CustomOrderRequestId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Reviews_ProductId",
@@ -701,6 +881,9 @@ namespace ECommerce.Infrastructure.Migrations
                 name: "CartItems");
 
             migrationBuilder.DropTable(
+                name: "Measurements");
+
+            migrationBuilder.DropTable(
                 name: "OrderItems");
 
             migrationBuilder.DropTable(
@@ -711,6 +894,9 @@ namespace ECommerce.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "RefreshTokens");
+
+            migrationBuilder.DropTable(
+                name: "RequestAttachments");
 
             migrationBuilder.DropTable(
                 name: "Reviews");
@@ -744,6 +930,15 @@ namespace ECommerce.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Addresses");
+
+            migrationBuilder.DropTable(
+                name: "Quotations");
+
+            migrationBuilder.DropTable(
+                name: "CustomOrderRequests");
+
+            migrationBuilder.DropTable(
+                name: "Materials");
 
             migrationBuilder.DropTable(
                 name: "Products");

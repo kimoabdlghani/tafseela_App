@@ -28,7 +28,7 @@ public class GetOrderByIdQueryHandler : IRequestHandler<GetOrderByIdQuery, Resul
             .Select(o => new OrderDetailDto(
                 o.Id,
                 o.CreatedAt,
-                o.TotalPrice,
+                o.TotalAmount,
                 o.OrderStatus.ToString(),
                 o.Address != null 
             ? $"{o.Address.Building}, {o.Address.Street}, {o.Address.City}, {o.Address.Country}" 

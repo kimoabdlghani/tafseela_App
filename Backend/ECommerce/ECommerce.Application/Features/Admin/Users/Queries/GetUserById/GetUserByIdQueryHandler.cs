@@ -29,7 +29,7 @@ public class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, Result<
                 u.UserStatus == UserStatus.Active,
                 u.CreatedAt,
                 u.Orders.Count,
-                u.Orders.Where(o => o.OrderStatus != OrderStatus.Cancelled).Sum(o => o.TotalPrice)
+                u.Orders.Where(o => o.OrderStatus != OrderStatus.Cancelled).Sum(o => o.TotalAmount)
             ))
             .FirstOrDefaultAsync(cancellationToken);
 

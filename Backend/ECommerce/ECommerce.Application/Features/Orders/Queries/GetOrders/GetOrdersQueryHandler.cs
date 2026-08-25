@@ -29,7 +29,7 @@ public class GetOrdersQueryHandler : IRequestHandler<GetOrdersQuery, Result<IEnu
             .Select(o => new OrderListDto(
                 o.Id,
                 o.CreatedAt,
-                o.TotalPrice,
+                o.TotalAmount,
                 o.OrderStatus.ToString() 
             ))
             .ToListAsync(cancellationToken);

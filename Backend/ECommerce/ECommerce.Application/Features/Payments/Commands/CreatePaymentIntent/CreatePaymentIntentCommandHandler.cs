@@ -48,7 +48,7 @@ public class CreatePaymentIntentCommandHandler : IRequestHandler<CreatePaymentIn
 
         var transactionId = await _paymentService.CreatePaymentTransactionAsync(
             order.Id,
-            order.TotalPrice,
+            order.TotalAmount,
             _currentUserService.Email,
             cancellationToken: cancellationToken);
 

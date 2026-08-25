@@ -31,7 +31,7 @@ public class GetDashboardSummaryQueryHandler : IRequestHandler<GetDashboardSumma
 
         var totalRevenue = await _context.Orders
             .Where(o => o.OrderStatus != OrderStatus.Cancelled)
-            .SumAsync(o => o.TotalPrice, cancellationToken);
+            .SumAsync(o => o.TotalAmount, cancellationToken);
 
         var recentOrders = await _context.Orders
             .AsNoTracking()
@@ -40,7 +40,7 @@ public class GetDashboardSummaryQueryHandler : IRequestHandler<GetDashboardSumma
             .Select(o => new RecentOrderDto(
                 o.Id,
                 $"{o.User.FirstName} {o.User.LastName}", 
-                o.TotalPrice,
+                o.TotalAmount,
                 o.OrderStatus.ToString(),
                 o.CreatedAt
             ))

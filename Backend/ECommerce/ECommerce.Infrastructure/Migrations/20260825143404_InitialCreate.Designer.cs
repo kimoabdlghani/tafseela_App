@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ECommerce.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260717133404_InitialCreate")]
+    [Migration("20260825143404_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -107,6 +107,12 @@ namespace ECommerce.Infrastructure.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
+                    b.Property<string>("LogoPublicId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LogoUrl")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -134,9 +140,6 @@ namespace ECommerce.Infrastructure.Migrations
                     b.Property<int>("ProductVariantId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ProductVariantId1")
-                        .HasColumnType("int");
-
                     b.Property<int>("Quantity")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
@@ -151,8 +154,6 @@ namespace ECommerce.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ProductVariantId");
-
-                    b.HasIndex("ProductVariantId1");
 
                     b.HasIndex("UserId", "ProductVariantId")
                         .IsUnique();
@@ -200,6 +201,151 @@ namespace ECommerce.Infrastructure.Migrations
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("ECommerce.Domain.Entities.CustomOrderRequest", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AdminNotes")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("DepthCm")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FinishOrColor")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("HeightCm")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("MaterialId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ReferenceProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("WidthCm")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MaterialId");
+
+                    b.HasIndex("ReferenceProductId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("CustomOrderRequests");
+                });
+
+            modelBuilder.Entity("ECommerce.Domain.Entities.Material", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("BasePricePerSquareMeter")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsAvailable")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Materials");
+                });
+
+            modelBuilder.Entity("ECommerce.Domain.Entities.Measurement", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("Height")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<decimal>("Length")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Unit")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("Width")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("Measurements");
+                });
+
             modelBuilder.Entity("ECommerce.Domain.Entities.Order", b =>
                 {
                     b.Property<int>("Id")
@@ -217,12 +363,23 @@ namespace ECommerce.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("OrderNumber")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
                     b.Property<string>("OrderStatus")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<decimal>("TotalPrice")
+                    b.Property<decimal>("PaidAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("QuotationId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("TotalAmount")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("UpdatedAt")
@@ -236,6 +393,10 @@ namespace ECommerce.Infrastructure.Migrations
                     b.HasIndex("AddressId");
 
                     b.HasIndex("AddressId1");
+
+                    b.HasIndex("QuotationId")
+                        .IsUnique()
+                        .HasFilter("[QuotationId] IS NOT NULL");
 
                     b.HasIndex("UserId");
 
@@ -254,6 +415,9 @@ namespace ECommerce.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
 
@@ -262,9 +426,6 @@ namespace ECommerce.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ProductVariantId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ProductVariantId1")
                         .HasColumnType("int");
 
                     b.Property<int>("Quantity")
@@ -280,13 +441,14 @@ namespace ECommerce.Infrastructure.Migrations
                     b.Property<decimal>("UnitPrice")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
 
                     b.HasIndex("OrderId");
 
                     b.HasIndex("ProductVariantId");
-
-                    b.HasIndex("ProductVariantId1");
 
                     b.ToTable("OrderItems");
                 });
@@ -305,8 +467,14 @@ namespace ECommerce.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("MilestoneType")
+                        .HasColumnType("int");
+
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
+
+                    b.Property<DateTime?>("PaidAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("PaymentMethod")
                         .IsRequired()
@@ -318,8 +486,13 @@ namespace ECommerce.Infrastructure.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<string>("StripeClientSecret")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("StripePaymentIntentId")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("TransactionId")
-                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
@@ -358,6 +531,9 @@ namespace ECommerce.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(2000)
                         .HasColumnType("nvarchar(2000)");
+
+                    b.Property<decimal?>("EstimatedStartingPrice")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -409,6 +585,9 @@ namespace ECommerce.Infrastructure.Migrations
                     b.Property<string>("PublicId")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -465,6 +644,61 @@ namespace ECommerce.Infrastructure.Migrations
                     b.ToTable("ProductVariants");
                 });
 
+            modelBuilder.Entity("ECommerce.Domain.Entities.Quotation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("AccessoriesCost")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CustomOrderRequestId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("EstimatedProductionDays")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("LaborCost")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("MaterialCost")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Notes")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("RequiredDepositAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("TotalAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ValidUntil")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomOrderRequestId");
+
+                    b.ToTable("Quotations");
+                });
+
             modelBuilder.Entity("ECommerce.Domain.Entities.RefreshToken", b =>
                 {
                     b.Property<int>("Id")
@@ -501,6 +735,41 @@ namespace ECommerce.Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("RefreshTokens");
+                });
+
+            modelBuilder.Entity("ECommerce.Domain.Entities.RequestAttachment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CustomOrderRequestId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PublicId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomOrderRequestId");
+
+                    b.ToTable("RequestAttachments");
                 });
 
             modelBuilder.Entity("ECommerce.Domain.Entities.Review", b =>
@@ -657,6 +926,9 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.Property<int>("ProductVariantId")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -823,10 +1095,6 @@ namespace ECommerce.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ECommerce.Domain.Entities.ProductVariant", null)
-                        .WithMany("CartItems")
-                        .HasForeignKey("ProductVariantId1");
-
                     b.HasOne("ECommerce.Domain.Entities.User", "User")
                         .WithMany("CartItems")
                         .HasForeignKey("UserId")
@@ -848,6 +1116,42 @@ namespace ECommerce.Infrastructure.Migrations
                     b.Navigation("ParentCategory");
                 });
 
+            modelBuilder.Entity("ECommerce.Domain.Entities.CustomOrderRequest", b =>
+                {
+                    b.HasOne("ECommerce.Domain.Entities.Material", "Material")
+                        .WithMany("CustomOrderRequests")
+                        .HasForeignKey("MaterialId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ECommerce.Domain.Entities.Product", "ReferenceProduct")
+                        .WithMany()
+                        .HasForeignKey("ReferenceProductId");
+
+                    b.HasOne("ECommerce.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Material");
+
+                    b.Navigation("ReferenceProduct");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("ECommerce.Domain.Entities.Measurement", b =>
+                {
+                    b.HasOne("ECommerce.Domain.Entities.Product", "Product")
+                        .WithMany("Measurements")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("ECommerce.Domain.Entities.Order", b =>
                 {
                     b.HasOne("ECommerce.Domain.Entities.Address", "Address")
@@ -860,6 +1164,11 @@ namespace ECommerce.Infrastructure.Migrations
                         .WithMany("Orders")
                         .HasForeignKey("AddressId1");
 
+                    b.HasOne("ECommerce.Domain.Entities.Quotation", "Quotation")
+                        .WithOne("Order")
+                        .HasForeignKey("ECommerce.Domain.Entities.Order", "QuotationId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.HasOne("ECommerce.Domain.Entities.User", "User")
                         .WithMany("Orders")
                         .HasForeignKey("UserId")
@@ -867,6 +1176,8 @@ namespace ECommerce.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Address");
+
+                    b.Navigation("Quotation");
 
                     b.Navigation("User");
                 });
@@ -884,10 +1195,6 @@ namespace ECommerce.Infrastructure.Migrations
                         .HasForeignKey("ProductVariantId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.HasOne("ECommerce.Domain.Entities.ProductVariant", null)
-                        .WithMany("OrderItems")
-                        .HasForeignKey("ProductVariantId1");
 
                     b.Navigation("Order");
 
@@ -945,6 +1252,17 @@ namespace ECommerce.Infrastructure.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("ECommerce.Domain.Entities.Quotation", b =>
+                {
+                    b.HasOne("ECommerce.Domain.Entities.CustomOrderRequest", "CustomOrderRequest")
+                        .WithMany("Quotations")
+                        .HasForeignKey("CustomOrderRequestId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CustomOrderRequest");
+                });
+
             modelBuilder.Entity("ECommerce.Domain.Entities.RefreshToken", b =>
                 {
                     b.HasOne("ECommerce.Domain.Entities.User", "User")
@@ -954,6 +1272,17 @@ namespace ECommerce.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("ECommerce.Domain.Entities.RequestAttachment", b =>
+                {
+                    b.HasOne("ECommerce.Domain.Entities.CustomOrderRequest", "CustomOrderRequest")
+                        .WithMany("Attachments")
+                        .HasForeignKey("CustomOrderRequestId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CustomOrderRequest");
                 });
 
             modelBuilder.Entity("ECommerce.Domain.Entities.Review", b =>
@@ -1062,6 +1391,18 @@ namespace ECommerce.Infrastructure.Migrations
                     b.Navigation("SubCategories");
                 });
 
+            modelBuilder.Entity("ECommerce.Domain.Entities.CustomOrderRequest", b =>
+                {
+                    b.Navigation("Attachments");
+
+                    b.Navigation("Quotations");
+                });
+
+            modelBuilder.Entity("ECommerce.Domain.Entities.Material", b =>
+                {
+                    b.Navigation("CustomOrderRequests");
+                });
+
             modelBuilder.Entity("ECommerce.Domain.Entities.Order", b =>
                 {
                     b.Navigation("OrderItems");
@@ -1073,6 +1414,8 @@ namespace ECommerce.Infrastructure.Migrations
                 {
                     b.Navigation("Images");
 
+                    b.Navigation("Measurements");
+
                     b.Navigation("Reviews");
 
                     b.Navigation("Variants");
@@ -1080,11 +1423,12 @@ namespace ECommerce.Infrastructure.Migrations
 
             modelBuilder.Entity("ECommerce.Domain.Entities.ProductVariant", b =>
                 {
-                    b.Navigation("CartItems");
-
-                    b.Navigation("OrderItems");
-
                     b.Navigation("WishlistItems");
+                });
+
+            modelBuilder.Entity("ECommerce.Domain.Entities.Quotation", b =>
+                {
+                    b.Navigation("Order");
                 });
 
             modelBuilder.Entity("ECommerce.Domain.Entities.User", b =>

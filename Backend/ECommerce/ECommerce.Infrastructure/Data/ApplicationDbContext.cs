@@ -28,6 +28,11 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<int>, i
     public DbSet<Review> Reviews { get; set; }
     public DbSet<Address> Addresses { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
+    public DbSet<Material> Materials { get; set; }
+    public DbSet<CustomOrderRequest> CustomOrderRequests { get; set; }
+    public DbSet<RequestAttachment> RequestAttachments { get; set; }
+    public DbSet<Quotation> Quotations { get; set; }
+    public DbSet<Measurement> Measurements { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

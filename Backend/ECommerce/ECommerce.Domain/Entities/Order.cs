@@ -6,15 +6,15 @@ namespace ECommerce.Domain.Entities
     public class Order : BaseEntity
     {
         public string OrderNumber { get; set; } = string.Empty;
-        public Guid UserId { get; set; }
-        public Guid AddressId { get; set; }
+        public int UserId { get; set; }
+        public int AddressId { get; set; }
 
-        public Guid? QuotationId { get; set; } = Guid.Empty;
+        public int? QuotationId { get; set; }
         public OrderStatus OrderStatus { get; set; } = OrderStatus.Pending;
         public decimal TotalAmount { get; set; }
         public decimal PaidAmount { get; set; }
         public decimal RemainingAmount => TotalAmount - PaidAmount;
-        public OrderStatus Status { get; set; } = OrderStatus.Pending;
+
         public User User { get; set; } = null!;
         public Quotation? Quotation { get; set; }
         public Address Address { get; set; } = null!;
@@ -33,24 +33,26 @@ namespace ECommerce.Domain.Entities
 
         public ICollection<CustomOrderRequest> CustomOrderRequests { get; set; } = new List<CustomOrderRequest>();
     }
+
     public class RequestAttachment : BaseEntity
     {
-        public Guid CustomOrderRequestId { get; set; }
+        public int CustomOrderRequestId { get; set; }
         public CustomOrderRequest CustomOrderRequest { get; set; } = null!;
 
         public string ImageUrl { get; set; } = string.Empty;
         public string PublicId { get; set; } = string.Empty;
         public string? Description { get; set; }
     }
+
     public class CustomOrderRequest : BaseEntity, ISoftDeletable
     {
-        public Guid UserId { get; set; }
+        public int UserId { get; set; }
         public User User { get; set; } = null!;
 
-        public Guid? ReferenceProductId { get; set; }
+        public int? ReferenceProductId { get; set; }
         public Product? ReferenceProduct { get; set; }
 
-        public Guid MaterialId { get; set; }
+        public int MaterialId { get; set; }
         public Material Material { get; set; } = null!;
 
         public decimal HeightCm { get; set; }
@@ -69,9 +71,10 @@ namespace ECommerce.Domain.Entities
         public ICollection<RequestAttachment> Attachments { get; set; } = new List<RequestAttachment>();
         public ICollection<Quotation> Quotations { get; set; } = new List<Quotation>();
     }
+
     public class Quotation : BaseEntity
     {
-        public Guid CustomOrderRequestId { get; set; }
+        public int CustomOrderRequestId { get; set; }
         public CustomOrderRequest CustomOrderRequest { get; set; } = null!;
 
         public decimal MaterialCost { get; set; }
@@ -85,7 +88,7 @@ namespace ECommerce.Domain.Entities
         public QuotationStatus Status { get; set; } = QuotationStatus.Draft;
 
         public string Notes { get; set; } = string.Empty;
-        public Guid? OrderId { get; set; }
+        public int? OrderId { get; set; }
         public Order? Order { get; set; }
     }
 }

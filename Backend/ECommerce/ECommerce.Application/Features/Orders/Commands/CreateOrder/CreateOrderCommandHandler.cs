@@ -53,8 +53,8 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Res
         {
             UserId = userId.Value, 
             AddressId = request.AddressId,
-            TotalPrice = totalPrice,
-             OrderStatus =OrderStatus.Pending,
+            TotalAmount = totalPrice,
+            OrderStatus = OrderStatus.Pending,
             CreatedAt = DateTime.UtcNow
         };
 
@@ -78,10 +78,10 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Res
         var payment = new Payment
         {
             Amount = totalPrice,
-            PaymentMethod = request.PaymentMethod,
+            PaymentMethod = request.PaymentMethod ?? string.Empty,
             PaymentStatus = PaymentStatus.Pending,
             CreatedAt = DateTime.UtcNow,
-            TransactionId = string.Empty 
+            TransactionId = string.Empty
         };
         
         order.Payment = payment;

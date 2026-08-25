@@ -22,6 +22,12 @@ namespace ECommerce.Application.Common.Interfaces
     DbSet<Payment> Payments { get; }
     
     DbSet<Review> Reviews { get; }
+    
+    DbSet<Material> Materials { get; }
+    DbSet<CustomOrderRequest> CustomOrderRequests { get; }
+    DbSet<RequestAttachment> RequestAttachments { get; }
+    DbSet<Quotation> Quotations { get; }
+    DbSet<Measurement> Measurements { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 } 
