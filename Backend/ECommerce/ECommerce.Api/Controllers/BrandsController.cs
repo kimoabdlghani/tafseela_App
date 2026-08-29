@@ -1,7 +1,3 @@
-﻿using ECommerce.Application.Features.Addresses.Commands.CreateAddress;
-using ECommerce.Application.Features.Addresses.Commands.DeleteAddress;
-using ECommerce.Application.Features.Addresses.Commands.UpdateAddress;
-using ECommerce.Application.Features.Addresses.Queries.GetUserAddresses;
 using ECommerce.Application.Features.Brands.Commands.CreateBrand;
 using ECommerce.Application.Features.Brands.Commands.DeleteBrand;
 using ECommerce.Application.Features.Brands.Commands.UpdateBrand;
@@ -15,11 +11,11 @@ namespace ECommerce.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
     public class BrandsController(ISender sender)
     : ApiControllerBase(sender)
     {
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create(CreateBrandCommand command)
         {
             var result = await Sender.Send(command);
@@ -41,6 +37,7 @@ namespace ECommerce.Api.Controllers
         }
 
         [HttpPut]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(
             UpdateBrandCommand command)
         {
@@ -50,6 +47,7 @@ namespace ECommerce.Api.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             var success = await Sender.Send(new DeleteBrandCommand(id));

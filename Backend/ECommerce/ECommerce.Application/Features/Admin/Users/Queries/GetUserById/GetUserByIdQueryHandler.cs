@@ -24,7 +24,7 @@ public class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, Result<
             .Select(u => new UserDetailDto(
                 u.Id,
                 $"{u.FirstName} {u.LastName}",
-                u.Email,
+                u.Email ?? "",
                 u.PhoneNumber,
                 u.UserStatus == UserStatus.Active,
                 u.CreatedAt,

@@ -21,7 +21,7 @@ public class TokenService : ITokenService
         _context = context;
     }
 
-    public async Task<string> GenerateAccessTokenAsync(User user, IEnumerable<string> roles, CancellationToken cancellationToken = default)
+    public Task<string> GenerateAccessTokenAsync(User user, IEnumerable<string> roles, CancellationToken cancellationToken = default)
     {
         var claims = new List<Claim>
         {
@@ -43,28 +43,17 @@ public class TokenService : ITokenService
             signingCredentials: creds
         );
 
-        return new JwtSecurityTokenHandler().WriteToken(token);
+        return Task.FromResult(new JwtSecurityTokenHandler().WriteToken(token));
     }
 
-    public async Task<string> GenerateRefreshTokenAsync(User user, CancellationToken cancellationToken = default)
+    public Task<string> GenerateRefreshTokenAsync(User user, CancellationToken cancellationToken = default)
     {
         var randomNumber = new byte[32];
         using var rng = RandomNumberGenerator.Create();
         rng.GetBytes(randomNumber);
         var token = Convert.ToBase64String(randomNumber);
 
-        var refreshToken = new RefreshToken
-        {
-            Token = token,
-            UserId = user.Id,
-            ExpiresAt = DateTime.UtcNow.AddDays(double.Parse(_configuration["Jwt:RefreshTokenDurationInDays"]!)),
-            IsRevoked = false
-        };
-
-        _context.RefreshTokens.Add(refreshToken);
-        await _context.SaveChangesAsync(cancellationToken);
-
-        return token;
+        return Task.FromResult(token);
     }
 
     public async Task RevokeRefreshTokenAsync(string token, CancellationToken cancellationToken = default)

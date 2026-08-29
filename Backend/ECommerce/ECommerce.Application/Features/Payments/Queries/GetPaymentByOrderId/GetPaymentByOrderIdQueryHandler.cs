@@ -31,7 +31,7 @@ public class GetPaymentByOrderIdQueryHandler : IRequestHandler<GetPaymentByOrder
                 p.Amount,
                 p.PaymentStatus.ToString(), 
                 p.PaymentMethod,
-                p.TransactionId,
+                p.TransactionId ?? "",
                 p.CreatedAt,
                 p.UpdatedAt
             ))

@@ -25,7 +25,7 @@ public class GetProductsQueryHandler : IRequestHandler<GetProductsQuery, Result<
         {
             var search = request.SearchTerm.ToLower().Trim();
             query = query.Where(p => p.Name.ToLower().Contains(search) 
-                                  || p.Description.ToLower().Contains(search));
+                                  || (p.Description ?? "").ToLower().Contains(search));
         }
 
         if (request.CategoryId.HasValue)
@@ -41,8 +41,8 @@ public class GetProductsQueryHandler : IRequestHandler<GetProductsQuery, Result<
         var projectedQuery = query.Select(p => new ProductListDto(
             p.Id,
             p.Name,
-            p.Category.Name,
-            p.Brand.Name,
+            p.Category != null ? p.Category.Name : "",
+            p.Brand != null ? p.Brand.Name : "",
             p.Images.Where(i => i.IsPrimary).Select(i => i.ImageUrl).FirstOrDefault(),
             p.Variants.Any(v => !v.IsDeleted) ? p.Variants.Where(v => !v.IsDeleted).Min(v => v.Price) : 0,
             p.Variants.Where(v => !v.IsDeleted).Sum(v => v.StockQuantity) > 0

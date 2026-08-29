@@ -25,15 +25,15 @@ public class GetAllUsersQueryHandler : IRequestHandler<GetAllUsersQuery, Result<
             var search = request.SearchTerm.Trim().ToLower();
             query = query.Where(u => 
                 (u.FirstName + " " + u.LastName).ToLower().Contains(search) || 
-                u.Email.ToLower().Contains(search));
+                (u.Email ?? "").ToLower().Contains(search));
         }
 
         if (request.IsActive.HasValue)
         {
             if (request.IsActive.Value)
                 query = query.Where(u => u.UserStatus == UserStatus.Active);
-            // else
-            //     query = query.Where(u => u.UserStatus != UserStatus.Active);
+            else
+                query = query.Where(u => u.UserStatus != UserStatus.Active);
         }
 
         var totalCount = await query.CountAsync(cancellationToken);
@@ -45,7 +45,7 @@ public class GetAllUsersQueryHandler : IRequestHandler<GetAllUsersQuery, Result<
             .Select(u => new UserListDto(
                 u.Id,
                 $"{u.FirstName} {u.LastName}",
-                u.Email,
+                u.Email ?? "",
                 u.UserStatus == UserStatus.Active,
                 u.CreatedAt
             ))

@@ -38,6 +38,12 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, Result<AuthToke
         {
             return Result<AuthTokensDto>.Failure("Your account has been suspended or banned. Please contact support.");
         }
+
+        if (!user.EmailConfirmed)
+        {
+            return Result<AuthTokensDto>.Failure("Please verify your email address before logging in.");
+        }
+
         var isPasswordValid = await _identityService.CheckPasswordAsync(request.Email, request.Password);
         
         if (!isPasswordValid)

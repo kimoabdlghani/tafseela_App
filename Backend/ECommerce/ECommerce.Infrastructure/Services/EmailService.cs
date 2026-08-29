@@ -19,7 +19,7 @@ public class EmailService : IEmailService
     public async Task SendEmailAsync(string to, string subject, string body, CancellationToken cancellationToken = default)
     {
         var email = new MimeMessage();
-        email.From.Add(MailboxAddress.Parse(_configuration["EmailSettings:FromEmail"]));
+        email.From.Add(MailboxAddress.Parse(_configuration["EmailSettings:SenderEmail"]));
         email.To.Add(MailboxAddress.Parse(to));
         email.Subject = subject;
         email.Body = new TextPart(TextFormat.Html) { Text = body };
@@ -27,13 +27,13 @@ public class EmailService : IEmailService
         using var smtp = new SmtpClient();
         
         await smtp.ConnectAsync(
-            _configuration["EmailSettings:Host"], 
+            _configuration["EmailSettings:SmtpServer"], 
             int.Parse(_configuration["EmailSettings:Port"]!), 
             SecureSocketOptions.StartTls, 
             cancellationToken);
 
         await smtp.AuthenticateAsync(
-            _configuration["EmailSettings:FromEmail"], 
+            _configuration["EmailSettings:SenderEmail"], 
             _configuration["EmailSettings:Password"], 
             cancellationToken);
 

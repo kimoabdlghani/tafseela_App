@@ -5,6 +5,7 @@ using ECommerce.Application;
 using ECommerce.Infrastructure;
 using Microsoft.OpenApi;
 using Serilog;
+using Scalar.AspNetCore;
 using ECommerce.Api.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -53,9 +54,8 @@ var app = builder.Build();
 
 app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 
-if(app.Environment.IsDevelopment())
+using (var scope = app.Services.CreateScope())
 {
-    using var scope = app.Services.CreateScope();
     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<int>>>();
     await IdentitySeeder.SeedAsync(userManager, roleManager);
@@ -65,9 +65,16 @@ if (app.Environment.IsDevelopment()||app.Environment.IsProduction())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.MapScalarApiReference(options =>
+    {
+        options
+            .WithTitle("Cortexa API")
+            .WithOpenApiRoutePattern("/swagger/{documentName}/swagger.json");
+    }
+    );
 }
 app.UseSerilogRequestLogging();
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();

@@ -26,7 +26,7 @@ public class ForgotPasswordCommandHandler : IRequestHandler<ForgotPasswordComman
         var user = await _context.Users
             .FirstOrDefaultAsync(u => u.Email == request.Email, cancellationToken);
 
-        if (user != null)
+        if (user != null && user.Email != null)
         {
             var resetToken = await _identityService.GeneratePasswordResetTokenAsync(user.Email);
 

@@ -34,17 +34,14 @@ public class CreatePaymentIntentCommandHandler : IRequestHandler<CreatePaymentIn
         if (order == null)
             return Result<string>.Failure("Order not found.");
 
-        if (order.OrderStatus.ToString() == "Cancelled")
-            return Result<string>.Failure("Cannot pay for a cancelled order.");
-            
-        if (order.OrderStatus != OrderStatus.Pending)
-            return Result<string>.Failure("Payment can only be initiated for orders with Pending status.");
-
         if (order.Payment == null)
             return Result<string>.Failure("No payment record found for this order.");
 
         if (order.Payment.PaymentStatus == PaymentStatus.Paid)
             return Result<string>.Failure("This order has already been paid.");
+
+        if (order.OrderStatus != OrderStatus.Pending)
+            return Result<string>.Failure("Payment can only be initiated for orders with Pending status.");
 
         var transactionId = await _paymentService.CreatePaymentTransactionAsync(
             order.Id,

@@ -13,7 +13,7 @@ public class StripePaymentService : IPaymentService
     {
         _configuration = configuration;
         
-        StripeConfiguration.ApiKey = _configuration["Stripe:SecretKey"];
+        StripeConfiguration.ApiKey = _configuration["StripeSettings:SecretKey"];
         
         _paymentIntentService = new PaymentIntentService();
     }
@@ -49,7 +49,7 @@ public class StripePaymentService : IPaymentService
     {
         try
         {
-            var endpointSecret = _configuration["Stripe:WebhookSecret"];
+            var endpointSecret = _configuration["StripeSettings:WebhookSecret"];
             
             var stripeEvent = EventUtility.ConstructEvent(
                 jsonPayload, 
