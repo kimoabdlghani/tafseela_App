@@ -2,10 +2,15 @@ namespace ECommerce.Application.Features.Orders.DTOs;
 
 public record OrderDetailDto(
     int Id,
-    DateTime OrderDate,
-    decimal TotalAmount,
+    string OrderNumber,
+    int UserId,
+    string CustomerEmail,
     string Status,
-    string ShippingAddress,
-    string PaymentMethod,
-    List<OrderItemDto> Items
-);
+    decimal ProductTotal,
+    decimal DeliveryCost,
+    decimal OrderTotal,
+    decimal DepositAmount,
+    decimal DepositPercentageSnapshot,
+    string AddressSnapshot,
+    DateTime CreatedAt,
+    List<OrderItemDto> Items);

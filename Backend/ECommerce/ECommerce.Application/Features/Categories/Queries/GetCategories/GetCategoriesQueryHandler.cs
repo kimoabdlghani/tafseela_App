@@ -22,8 +22,7 @@ public class GetCategoriesQueryHandler : IRequestHandler<GetCategoriesQuery, Res
     {
         var categories = await _context.Categories
             .AsNoTracking()
-            .Where(c => c.ParentCategoryId == null && !c.IsDeleted)
-            .Include(c => c.SubCategories.Where(sub => !sub.IsDeleted))
+            .Where(c => !c.IsDeleted)
             .ToListAsync(cancellationToken);
 
         var categoryDtos = _mapper.Map<IEnumerable<CategoryDto>>(categories);

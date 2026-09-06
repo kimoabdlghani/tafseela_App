@@ -70,6 +70,8 @@ public static class DependencyInjection
         services.AddScoped<IPaymentService, StripePaymentService>();
         services.AddScoped<ICurrentUserService,CurrentUserService>();
         services.AddScoped<ITokenService,TokenService>();
+        services.AddScoped<ICalculationEngine, CalculationEngine>();
+        services.AddScoped<IPricingService, PricingService>();
         services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
         return services;
     }

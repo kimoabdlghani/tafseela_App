@@ -2,7 +2,6 @@ using ECommerce.Application.Common.Interfaces;
 using ECommerce.Application.Common.Models;
 using ECommerce.Application.Features.Auth.DTOs;
 using ECommerce.Domain.Entities;
-using ECommerce.Domain.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -35,9 +34,9 @@ public class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand, R
         var user = await _context.Users
             .FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);
 
-        if (user == null || user.UserStatus == UserStatus.Banned || user.UserStatus == UserStatus.Suspended)
+        if (user == null || user.IsDeleted)
         {
-            return Result<AuthTokensDto>.Failure("User is invalid or suspended.");
+            return Result<AuthTokensDto>.Failure("User is invalid or deactivated.");
         }
 
         var existingRefreshToken = await _context.RefreshTokens

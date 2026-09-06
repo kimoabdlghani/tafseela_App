@@ -2,7 +2,6 @@ using ECommerce.Application.Common.Interfaces;
 using ECommerce.Application.Common.Models;
 using ECommerce.Application.Features.Auth.DTOs;
 using ECommerce.Domain.Entities;
-using ECommerce.Domain.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -34,9 +33,9 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, Result<AuthToke
             return Result<AuthTokensDto>.Failure("Invalid email or password.");
         }
 
-        if (user.UserStatus == UserStatus.Banned || user.UserStatus == UserStatus.Suspended)
+        if (user.IsDeleted)
         {
-            return Result<AuthTokensDto>.Failure("Your account has been suspended or banned. Please contact support.");
+            return Result<AuthTokensDto>.Failure("Your account has been deactivated. Please contact support.");
         }
 
         if (!user.EmailConfirmed)

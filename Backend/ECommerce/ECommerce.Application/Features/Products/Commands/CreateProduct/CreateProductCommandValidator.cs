@@ -12,8 +12,5 @@ public class CreateProductCommandValidator : AbstractValidator<CreateProductComm
 
         RuleFor(v => v.CategoryId)
             .GreaterThan(0).WithMessage("Category is required.");
-
-        RuleFor(v => v.BrandId)
-            .GreaterThan(0).WithMessage("Brand is required.");
     }
 }

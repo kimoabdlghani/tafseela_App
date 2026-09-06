@@ -22,7 +22,6 @@ public class GetCategoryByIdQueryHandler : IRequestHandler<GetCategoryByIdQuery,
     {
         var category = await _context.Categories
             .AsNoTracking()
-            .Include(c => c.SubCategories.Where(sub => !sub.IsDeleted))
             .FirstOrDefaultAsync(c => c.Id == request.Id && !c.IsDeleted, cancellationToken);
 
         if (category == null)

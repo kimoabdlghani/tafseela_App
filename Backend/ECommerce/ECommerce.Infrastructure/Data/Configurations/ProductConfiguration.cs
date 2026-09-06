@@ -17,30 +17,52 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
         builder.Property(p => p.Description)
             .HasMaxLength(2000);
 
+        builder.Property(p => p.Status)
+            .HasConversion<string>()
+            .HasMaxLength(20);
+
         builder.HasQueryFilter(p => !p.IsDeleted);
 
+        // Category relationship
         builder.HasOne(p => p.Category)
             .WithMany(c => c.Products)
             .HasForeignKey(p => p.CategoryId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasOne(p => p.Brand)
-            .WithMany(b => b.Products)
-            .HasForeignKey(p => p.BrandId)
-            .OnDelete(DeleteBehavior.SetNull); 
-
-        builder.HasMany(p => p.Variants) 
-            .WithOne(pv => pv.Product)
-            .HasForeignKey(pv => pv.ProductId)
-            .OnDelete(DeleteBehavior.Cascade); 
+        // Images
         builder.HasMany(p => p.Images)
             .WithOne(pi => pi.Product)
             .HasForeignKey(pi => pi.ProductId)
-            .OnDelete(DeleteBehavior.Cascade); 
-        builder.HasMany(p => p.Reviews)
-            .WithOne(r => r.Product)
-            .HasForeignKey(r => r.ProductId)
-            .OnDelete(DeleteBehavior.Cascade); 
+            .OnDelete(DeleteBehavior.Cascade);
 
+        // Dimensions
+        builder.HasMany(p => p.Dimensions)
+            .WithOne(pd => pd.Product)
+            .HasForeignKey(pd => pd.ProductId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // ProductWoodMaterials (join)
+        builder.HasMany(p => p.ProductWoodMaterials)
+            .WithOne(pwm => pwm.Product)
+            .HasForeignKey(pwm => pwm.ProductId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // ProductParts
+        builder.HasMany(p => p.ProductParts)
+            .WithOne(pp => pp.Product)
+            .HasForeignKey(pp => pp.ProductId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // ProductComponents
+        builder.HasMany(p => p.ProductComponents)
+            .WithOne(pc => pc.Product)
+            .HasForeignKey(pc => pc.ProductId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // Configurations
+        builder.HasMany(p => p.Configurations)
+            .WithOne(cfg => cfg.Product)
+            .HasForeignKey(cfg => cfg.ProductId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

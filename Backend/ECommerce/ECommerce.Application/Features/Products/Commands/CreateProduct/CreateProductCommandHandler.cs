@@ -17,33 +17,23 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
 
     public async Task<Result<int>> Handle(CreateProductCommand request, CancellationToken cancellationToken)
     {
-        // 1. التحقق من وجود القسم
+        // Verify category exists and is active
         var categoryExists = await _context.Categories
-            .AnyAsync(c => c.Id == request.CategoryId && !c.IsDeleted, cancellationToken);
+            .AnyAsync(c => c.Id == request.CategoryId && !c.IsDeleted && c.IsActive, cancellationToken);
             
         if (!categoryExists)
         {
-            return Result<int>.Failure("The specified category does not exist.");
+            return Result<int>.Failure("The specified category does not exist or is inactive.");
         }
 
-        // 2. التحقق من وجود العلامة التجارية (أصبحت إجبارية الآن)
-        var brandExists = await _context.Brands
-            .AnyAsync(b => b.Id == request.BrandId && !b.IsDeleted, cancellationToken);
-            
-        if (!brandExists)
-        {
-            return Result<int>.Failure("The specified brand does not exist.");
-        }
-
-        // 3. إنشاء المنتج الأساسي
+        // Create product in Draft status (Admin must publish separately)
         var product = new Product
         {
             Name = request.Name,
             Description = request.Description,
             CategoryId = request.CategoryId,
-            BrandId = request.BrandId,
-            IsActive = request.IsActive,
-            CreatedAt = DateTime.UtcNow 
+            Status = Domain.Enums.ProductStatus.Draft,
+            IsActive = true
         };
 
         _context.Products.Add(product);

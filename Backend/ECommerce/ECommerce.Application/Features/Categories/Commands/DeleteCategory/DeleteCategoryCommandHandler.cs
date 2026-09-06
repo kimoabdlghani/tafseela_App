@@ -24,12 +24,12 @@ public class DeleteCategoryCommandHandler : IRequestHandler<DeleteCategoryComman
             return Result.Failure("Category not found.");
         }
 
-        var hasSubCategories = await _context.Categories
-            .AnyAsync(c => c.ParentCategoryId == request.Id && !c.IsDeleted, cancellationToken);
+        var hasProducts = await _context.Products
+            .AnyAsync(p => p.CategoryId == request.Id && !p.IsDeleted, cancellationToken);
 
-        if (hasSubCategories)
+        if (hasProducts)
         {
-            return Result.Failure("Cannot delete this category because it contains active subcategories. Please delete or move them first.");
+            return Result.Failure("Cannot delete this category because it contains active products.");
         }
 
         category.IsDeleted = true;

@@ -4,8 +4,6 @@ public record ProductListDto(
     int Id,
     string Name,
     string CategoryName,
-    string BrandName,
     string? PrimaryImageUrl,
-    decimal StartingPrice, 
-    bool IsAvailable 
+    bool IsActive
 );

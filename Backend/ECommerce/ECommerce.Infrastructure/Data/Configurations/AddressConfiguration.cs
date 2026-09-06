@@ -2,7 +2,7 @@ using ECommerce.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace ECommerce.Infrastructure.Persistence.Configurations;
+namespace ECommerce.Infrastructure.Data.Configurations;
 
 public class AddressConfiguration : IEntityTypeConfiguration<Address>
 {
@@ -10,36 +10,14 @@ public class AddressConfiguration : IEntityTypeConfiguration<Address>
     {
         builder.HasKey(a => a.Id);
 
-        builder.Property(a => a.Street)
-            .IsRequired()
-            .HasMaxLength(200);
-
-        builder.Property(a => a.City)
-            .IsRequired()
-            .HasMaxLength(100);
-
-        builder.Property(a => a.Building)
-            .IsRequired()
-            .HasMaxLength(10);
-
-        builder.Property(a => a.Country)
-            .IsRequired()
-            .HasMaxLength(100);
-
-        builder.Property(a => a.PostalCode)
-            .HasMaxLength(20);
-
-        builder.Property(a => a.IsDefault)
-            .IsRequired()
-            .HasDefaultValue(false);
+        builder.Property(a => a.Country).IsRequired().HasMaxLength(100);
+        builder.Property(a => a.City).IsRequired().HasMaxLength(100);
+        builder.Property(a => a.Street).IsRequired().HasMaxLength(300);
+        builder.Property(a => a.Building).IsRequired().HasMaxLength(100);
+        builder.Property(a => a.Apartment).HasMaxLength(50);
+        builder.Property(a => a.Floor).HasMaxLength(20);
+        builder.Property(a => a.PostalCode).HasMaxLength(20);
 
         builder.HasQueryFilter(a => !a.IsDeleted);
-
-        builder.HasOne(a => a.User)
-            .WithMany(u => u.Addresses)
-            .HasForeignKey(a => a.UserId)
-            .OnDelete(DeleteBehavior.Cascade); 
-
-        
     }
 }

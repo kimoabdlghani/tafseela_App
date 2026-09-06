@@ -9,6 +9,5 @@ public record GetProductsQuery(
     int PageSize = 10,
     string? SearchTerm = null,
     int? CategoryId = null,
-    int? BrandId = null,
-    string? SortBy = null // أمثلة: "price_asc", "price_desc", "name", "newest"
+    string? SortBy = null // e.g., "name", "newest"
 ) : IRequest<Result<PaginatedList<ProductListDto>>>;

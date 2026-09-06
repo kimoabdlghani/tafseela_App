@@ -17,33 +17,20 @@ public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryComman
 
     public async Task<Result<int>> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
     {
-        if (request.ParentCategoryId.HasValue)
-        {
-            var parentExists = await _context.Categories
-                .AnyAsync(c => c.Id == request.ParentCategoryId.Value && !c.IsDeleted, cancellationToken);
-                
-            if (!parentExists)
-            {
-                return Result<int>.Failure("The specified parent category does not exist.");
-            }
-        }
-
         var nameExists = await _context.Categories
-            .AnyAsync(c => c.Name == request.Name 
-                        && c.ParentCategoryId == request.ParentCategoryId 
-                        && !c.IsDeleted, cancellationToken);
+            .AnyAsync(c => c.Name == request.Name && !c.IsDeleted, cancellationToken);
 
         if (nameExists)
         {
-            return Result<int>.Failure("A category with the same name already exists in this level.");
+            return Result<int>.Failure("A category with the same name already exists.");
         }
 
         var category = new Category
         {
             Name = request.Name,
             Description = request.Description,
-            ParentCategoryId = request.ParentCategoryId,
-            CreatedAt = DateTime.UtcNow
+            ImageUrl = request.ImageUrl,
+            IsActive = true
         };
 
         _context.Categories.Add(category);

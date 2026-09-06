@@ -27,25 +27,15 @@ public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand,
         if (product.CategoryId != request.CategoryId)
         {
             var categoryExists = await _context.Categories
-                .AnyAsync(c => c.Id == request.CategoryId && !c.IsDeleted, cancellationToken);
+                .AnyAsync(c => c.Id == request.CategoryId && !c.IsDeleted && c.IsActive, cancellationToken);
                 
-            if (!categoryExists) return Result.Failure("The specified category does not exist.");
-        }
-
-        if (product.BrandId != request.BrandId)
-        {
-            var brandExists = await _context.Brands
-                .AnyAsync(b => b.Id == request.BrandId && !b.IsDeleted, cancellationToken);
-                
-            if (!brandExists) return Result.Failure("The specified brand does not exist.");
+            if (!categoryExists) return Result.Failure("The specified category does not exist or is inactive.");
         }
 
         product.Name = request.Name;
         product.Description = request.Description;
         product.CategoryId = request.CategoryId;
-        product.BrandId = request.BrandId;
         product.IsActive = request.IsActive;
-        product.UpdatedAt = DateTime.UtcNow; 
 
         await _context.SaveChangesAsync(cancellationToken);
 

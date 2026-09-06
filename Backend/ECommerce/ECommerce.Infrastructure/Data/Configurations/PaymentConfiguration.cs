@@ -1,5 +1,4 @@
 using ECommerce.Domain.Entities;
-using ECommerce.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -11,28 +10,26 @@ public class PaymentConfiguration : IEntityTypeConfiguration<Payment>
     {
         builder.HasKey(p => p.Id);
 
-        
         builder.Property(p => p.Amount)
-            .IsRequired()
             .HasColumnType("decimal(18,2)");
 
-        builder.Property(p => p.PaymentStatus)
-            .IsRequired()
-            .HasConversion(
-                status => status.ToString(),
-                value => (PaymentStatus)Enum.Parse(typeof(PaymentStatus), value))
-            .HasMaxLength(50);
+        builder.Property(p => p.Status)
+            .HasConversion<string>()
+            .HasMaxLength(20);
 
-        builder.Property(p => p.TransactionId)
-            .HasMaxLength(255); 
         builder.Property(p => p.PaymentMethod)
-            .HasMaxLength(50);
+            .HasConversion<string>()
+            .HasMaxLength(20);
 
+        builder.Property(p => p.GatewayTransactionId)
+            .HasMaxLength(200);
 
-       
-        builder.HasOne(p => p.Order)
-            .WithOne(o => o.Payment)
-            .HasForeignKey<Payment>(p => p.OrderId) 
-            .OnDelete(DeleteBehavior.Restrict); 
+        builder.Property(p => p.Notes)
+            .HasMaxLength(500);
+
+        // Unique constraint on GatewayTransactionId for idempotency
+        builder.HasIndex(p => p.GatewayTransactionId)
+            .IsUnique()
+            .HasFilter("[GatewayTransactionId] IS NOT NULL");
     }
 }

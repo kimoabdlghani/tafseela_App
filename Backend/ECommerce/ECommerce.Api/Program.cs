@@ -56,9 +56,17 @@ app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 
 using (var scope = app.Services.CreateScope())
 {
-    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
-    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<int>>>();
-    await IdentitySeeder.SeedAsync(userManager, roleManager);
+    try
+    {
+        var dbContext = scope.ServiceProvider.GetRequiredService<ECommerce.Infrastructure.Data.ApplicationDbContext>();
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+        var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<int>>>();
+        await DatabaseSeeder.SeedAllAsync(dbContext, userManager, roleManager);
+    }
+    catch (Exception ex)
+    {
+        Log.Warning(ex, "An error occurred while seeding database during startup.");
+    }
 }
 
 if (app.Environment.IsDevelopment()||app.Environment.IsProduction())

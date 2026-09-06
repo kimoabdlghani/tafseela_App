@@ -14,30 +14,60 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<int>, i
         : base(options)
     {
     }
-    // user table not be dbset<user> because user table is in IdentityDbContext
-    public DbSet<Product> Products { get; set; }
-    public DbSet<ProductVariant> ProductVariants { get; set; }
-    public DbSet<ProductImage> ProductImages { get; set; }
+
+    // ─── Identity (user table lives in IdentityDbContext) ───────────────────
+    public DbSet<RefreshToken> RefreshTokens { get; set; }
+
+    // ─── Location ────────────────────────────────────────────────────────────
+    public DbSet<Address> Addresses { get; set; }
+
+    // ─── Catalog ─────────────────────────────────────────────────────────────
     public DbSet<Category> Categories { get; set; }
-    public DbSet<Brand> Brands { get; set; }
+    public DbSet<Product> Products { get; set; }
+    public DbSet<ProductImage> ProductImages { get; set; }
+    public DbSet<ProductDimension> ProductDimensions { get; set; }
+
+    // ─── Materials ───────────────────────────────────────────────────────────
+    public DbSet<WoodMaterial> WoodMaterials { get; set; }
+    public DbSet<WoodColor> WoodColors { get; set; }
+    public DbSet<ProductWoodMaterial> ProductWoodMaterials { get; set; }
+
+    // ─── Manufacturing ───────────────────────────────────────────────────────
+    public DbSet<Part> Parts { get; set; }
+    public DbSet<ProductPart> ProductParts { get; set; }
+    public DbSet<Component> Components { get; set; }
+    public DbSet<ProductComponent> ProductComponents { get; set; }
+    public DbSet<Paint> Paints { get; set; }
+
+    // ─── Configuration ───────────────────────────────────────────────────────
+    public DbSet<ProductConfiguration> ProductConfigurations { get; set; }
+    public DbSet<ConfigurationDimension> ConfigurationDimensions { get; set; }
+
+    // ─── Carpenter ───────────────────────────────────────────────────────────
+    public DbSet<CarpenterProfile> CarpenterProfiles { get; set; }
+    public DbSet<CarpenterApplication> CarpenterApplications { get; set; }
+
+    // ─── Cart ────────────────────────────────────────────────────────────────
+    public DbSet<Cart> Carts { get; set; }
+    public DbSet<CartItem> CartItems { get; set; }
+
+    // ─── Orders ──────────────────────────────────────────────────────────────
     public DbSet<Order> Orders { get; set; }
     public DbSet<OrderItem> OrderItems { get; set; }
     public DbSet<Payment> Payments { get; set; }
-    public DbSet<CartItem> CartItems { get; set; }
-    public DbSet<WishlistItem> WishlistItems { get; set; }
-    public DbSet<Review> Reviews { get; set; }
-    public DbSet<Address> Addresses { get; set; }
-    public DbSet<RefreshToken> RefreshTokens { get; set; }
-    public DbSet<Material> Materials { get; set; }
-    public DbSet<CustomOrderRequest> CustomOrderRequests { get; set; }
-    public DbSet<RequestAttachment> RequestAttachments { get; set; }
-    public DbSet<Quotation> Quotations { get; set; }
-    public DbSet<Measurement> Measurements { get; set; }
+
+    // ─── Production ──────────────────────────────────────────────────────────
+    public DbSet<ProductionJob> ProductionJobs { get; set; }
+    public DbSet<ProductionJobStatusHistory> ProductionJobStatusHistories { get; set; }
+
+    // ─── Settings ────────────────────────────────────────────────────────────
+    public DbSet<CompanySettings> CompanySettings { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
 
+        // Identity table names
         builder.Entity<User>().ToTable("Users");
         builder.Entity<IdentityRole<int>>().ToTable("Roles");
         builder.Entity<IdentityUserRole<int>>().ToTable("UserRoles");
@@ -70,6 +100,7 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<int>, i
             {
                 entry.State = EntityState.Modified;
                 softDeletableEntity.IsDeleted = true;
+                softDeletableEntity.DeletedAt = DateTime.UtcNow;
             }
         }
 

@@ -10,22 +10,14 @@ public class CartItemConfiguration : IEntityTypeConfiguration<CartItem>
     {
         builder.HasKey(ci => ci.Id);
 
-        builder.Property(ci => ci.Quantity)
-            .IsRequired()
-            .HasDefaultValue(1); 
-
-
-        builder.HasIndex(ci => new { ci.UserId, ci.ProductVariantId })
-            .IsUnique();
-        
-        builder.HasOne(ci => ci.User)
-            .WithMany(u => u.CartItems)
-            .HasForeignKey(ci => ci.UserId)
+        builder.HasOne(ci => ci.Cart)
+            .WithMany(c => c.Items)
+            .HasForeignKey(ci => ci.CartId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasOne(ci => ci.ProductVariant)
-            .WithMany() 
-            .HasForeignKey(ci => ci.ProductVariantId)
-            .OnDelete(DeleteBehavior.Cascade);
+        builder.HasOne(ci => ci.ProductConfiguration)
+            .WithMany(cfg => cfg.CartItems)
+            .HasForeignKey(ci => ci.ProductConfigurationId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

@@ -1,4 +1,5 @@
 using ECommerce.Domain.Common;
+using ECommerce.Domain.Enums;
 
 namespace ECommerce.Domain.Entities
 {
@@ -7,23 +8,28 @@ namespace ECommerce.Domain.Entities
         public int CategoryId { get; set; }
         public Category Category { get; set; } = null!;
 
-        public int? BrandId { get; set; }
-        public Brand? Brand { get; set; }
-
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
 
-        // Estimated starting price for customer reference only
-        public decimal? EstimatedStartingPrice { get; set; }
+        /// <summary>
+        /// Draft = Admin hasn't published yet. Published = Visible to customers.
+        /// </summary>
+        public ProductStatus Status { get; set; } = ProductStatus.Draft;
+
+        /// <summary>
+        /// IsActive = false means the product is soft-deactivated (hidden from customers).
+        /// A Published + Inactive product is no longer available for new orders.
+        /// </summary>
         public bool IsActive { get; set; } = true;
         public bool IsDeleted { get; set; }
         public DateTime? DeletedAt { get; set; }
 
-        public ICollection<ProductVariant> Variants { get; set; } = [];
+        // Navigation Properties
         public ICollection<ProductImage> Images { get; set; } = [];
-        public ICollection<Review> Reviews { get; set; } = [];
-
-        // Measurements kept for reference (dimensions catalog)
-        public ICollection<Measurement> Measurements { get; set; } = [];
+        public ICollection<ProductDimension> Dimensions { get; set; } = [];
+        public ICollection<ProductWoodMaterial> ProductWoodMaterials { get; set; } = [];
+        public ICollection<ProductPart> ProductParts { get; set; } = [];
+        public ICollection<ProductComponent> ProductComponents { get; set; } = [];
+        public ICollection<ProductConfiguration> Configurations { get; set; } = [];
     }
 }

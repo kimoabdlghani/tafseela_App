@@ -12,22 +12,19 @@ public class CategoryConfiguration : IEntityTypeConfiguration<Category>
 
         builder.Property(c => c.Name)
             .IsRequired()
-            .HasMaxLength(100);
+            .HasMaxLength(150);
 
         builder.Property(c => c.Description)
             .HasMaxLength(500);
 
+        builder.Property(c => c.ImageUrl)
+            .HasMaxLength(1000);
 
         builder.HasQueryFilter(c => !c.IsDeleted);
 
         builder.HasMany(c => c.Products)
             .WithOne(p => p.Category)
             .HasForeignKey(p => p.CategoryId)
-            .OnDelete(DeleteBehavior.Restrict); 
-        
-        builder.HasOne(c => c.ParentCategory)
-            .WithMany(c => c.SubCategories)
-            .HasForeignKey(c => c.ParentCategoryId)
             .OnDelete(DeleteBehavior.Restrict);
     }
 }

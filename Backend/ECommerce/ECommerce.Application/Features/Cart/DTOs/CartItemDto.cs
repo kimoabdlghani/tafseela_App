@@ -2,15 +2,15 @@ namespace ECommerce.Application.Features.Cart.DTOs;
 
 public record CartItemDto(
     int Id,
-    int VariantId,
+    int ProductConfigurationId,
     int ProductId,
     string ProductName,
-    string Color,
-    string Size,
-    decimal UnitPrice,
-    int Quantity,
-    int AvailableStock,
-    string? PrimaryImageUrl)
-{
-    public decimal TotalPrice => UnitPrice * Quantity; 
-}
+    string WoodMaterialName,
+    string WoodColorName,
+    Dictionary<string, decimal> Dimensions,
+    decimal SellingPrice,
+    decimal DepositAmount,
+    string? PrimaryImageUrl,
+    bool IsValid,
+    string? ValidationErrorMessage,
+    DateTime AddedAt);
